@@ -1,0 +1,16 @@
+#!/home/action/python3/bin/python 
+
+#http://www.openlogic.com/wazi/bid/315666/Developing-a-pubsub-application-in-Redis
+
+import redis
+import sys
+
+r = redis.Redis("localhost")
+
+ps_obj=r.pubsub()
+ps_obj.subscribe(sys.argv[1])
+
+print("Waiting for redis: %s '" % sys.argv[1] +"'")
+
+for item in ps_obj.listen():
+    print(item['data'])

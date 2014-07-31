@@ -1,0 +1,31 @@
+#!/home/action/.parts/bin/node
+
+var redis = require("redis"),
+    client = redis.createClient();
+
+client.on("error", function (err) {
+    console.log("error event - " + client.host + ":" + client.port + " - " + err);
+});
+
+// client.evalc("string key", "string val", redis.print);
+
+client.set("string key", "string val", redis.print);
+client.hset("cmd1", "cyl:", "42", redis.print);
+client.hset(["cmd1", "hd:", "33"], redis.print);
+
+client.hmset(["cmd1", "key:", "12345", "data:","the data in the record"], redis.print);
+
+client.hkeys("cmd1", function (err, replies) {
+    if (err) {
+        return console.error("error response - " + err);
+    }
+
+    console.log(replies.length + " replies:");
+    replies.forEach(function (reply, i) {
+        console.log("    " + i + ": " + reply);
+    });
+});
+
+client.quit(function (err, res) {
+    console.log("Exiting from quit command.");
+});

@@ -1,0 +1,15 @@
+#!/usr/bin/ruby
+require 'redis'
+
+r = Redis.new
+
+#r.del 'logs'
+
+#p "pushing log messages into a LIST"
+#r.rpush 'logs', 'some log message'
+
+ks = r.keys '*'
+print "\n keys: #{ks}\n\n"
+ks.each {|k| print "\n #{k} ::\t #{r.type(k)}"}
+print "\n"
+#r.get 'logs'

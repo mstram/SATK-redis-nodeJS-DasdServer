@@ -1,0 +1,15 @@
+#!/home/action/python3/bin/python 
+
+import redis
+import sys
+
+r = redis.Redis("localhost")
+
+r.publish(sys.argv[1],"["+sys.argv[2]+"] " + " ".join(sys.argv[3:]))
+
+#r.publish(sys.argv[1],sys.argv[2]) 
+chan ="t1"
+#data = "stuff"
+#data = 42
+#print("sending to channel '%s'  data: '%s' " % (chan,data))
+#r.publish(chan,data) 
