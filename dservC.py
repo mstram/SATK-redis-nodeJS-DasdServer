@@ -13,7 +13,7 @@ class DasdServer:
       key = 'herc'      
       def __init__(self,name):
           
-          print("(DasdServer)(init) name:",name)
+          print("(DasdServer v 0.001)(init) name:",name)
           self.name = name
           self.redis = redis.Redis("localhost")
           #print("Waiting for redis: %s '" % sys.argv[1] +"'")
@@ -24,7 +24,7 @@ class DasdServer:
 
           self.getMsgs();
 
-
+       
       def doRead(self):
           print("---- doRead ---")
           print("self.redis.hvals cmd03:")
