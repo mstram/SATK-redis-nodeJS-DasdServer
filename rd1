@@ -1,0 +1,67 @@
+#!/usr/bin/python 
+import sys
+import ckdutil
+from ckdutil import *
+
+def pparms():
+    if (len(sys.argv) != 4):
+      raise "Need 3 parms: cyl hd rec"
+    print("parms:")
+    for i in sys.argv:
+      print(i)
+  
+    #   cyl hd rec 
+  
+    cyl = str(sys.argv[1])
+    hd  = str(sys.argv[2])  
+    rec = str(sys.argv[3])  
+
+def hexStr(nm,ar):
+    print("---- (hexStr)---" + nm)
+    s = ""
+    for c in ar:
+        #print(c)
+        s+= str(c)
+    print("s: " + s)
+    return s
+
+def read(ck,rn):
+    rec = ck.read(rn)
+    print("rec#: %d" % rn)
+    print(rec)
+
+def test2(ck):
+    print("\n\n\n--------- test2 : read from existing DASD")
+    print("-- Attach --")
+
+    print("-- Seek ---")
+    ck.seek(0,1)
+
+    print("read")
+    read(ck,1)
+    read(ck,2)
+    read(ck,3)
+    read(ck,4)
+
+#pparms()
+exit()
+ck = {}
+
+fname  = 't2305'
+device = '2305'
+
+#ck = ckd.new(fname,device,None,False,True)
+
+#ck.detach()
+ck = ckd.attach(fname,False)  # False ReadOnly
+
+#test1(ck)
+#test3(ck)
+#test2(ck)
+
+
+ck.detach(True)
+
+
+# 1 - new, detach, attach, write, read   WORKS
+# 2  - new, (noDetach), write, read    WORKS
