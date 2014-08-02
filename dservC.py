@@ -5,13 +5,13 @@
 import redis
 import sys
 import time
-
+import json
 #import ckdutil
 #from ckdutil import *
 
 class DasdServer:
-      key = 'herc'      
-      cmds = [1,'qq','SATK-rdRec','SATK-wrtRec']
+      key = 'herc'
+      cmds = [1,'q','SATK-rdRec','SATK-wrtRec']
 
       def __init__(self,name):
 
@@ -19,6 +19,7 @@ class DasdServer:
           self.name = name
           #self.redis = redis.Redis("localhost")
           self.redis = redis.Redis("pub-redis-10388.us-east-1-4.1.ec2.garantiadata.com",10388)
+          print('self.redis',self.redis)
           #print("Waiting for redis: %s '" % sys.argv[1] +"'")
           self.p = self.redis.pubsub()
           #self.p.subscribe(sys.argv[1])
@@ -41,7 +42,64 @@ class DasdServer:
           except:
           #else:
             print("(findCMD)cmd:'%s' Not Found" % cmd)
+            self.keyName = cmd
             return False
+
+      def getNextQ(self):
+          print("(getNextQ)")
+          try:
+              #self.qe = self.redis.lpop('q')
+              self.qe = self.redis.lindex('q',0)
+              print("(getNextQ) qe: ",self.qe)
+              return True
+          except:
+              print("(getNextQ)some err",sys.exc_info()[1])
+
+      """
+       var req = {'uuid':uuid,
+                   'OP': OP,
+                   'id': 100,
+                  'cyl': 8,
+                   'hd': 4,
+                    'r': 1,
+                    'k': 'ABC',
+                    'd': 'A record here'
+                 };
+
+      """
+      def parse2(self,keyName):
+          print("(parse2) keyName:",keyName)
+          if self.getNextQ():
+             print("\n")
+             try:
+               print("(parse2) qe: ",self.qe)
+               ob  = json.loads(self.qe)
+
+               uuid = ob['uuid'].decode("utf-8")
+               print("ob['uuid'] : ",uuid,type(uuid) )
+
+               OP = ob['OP'].decode("utf-8")
+               print("ob['OP'] : ",OP,type(OP) )
+
+               id = ob['id'].decode("utf-8")
+               print("id : ",id,type(id))
+
+               cyl = ob['cyl'].decode("utf-8")
+               print("cyl : ",cyl,type(cyl))
+
+               hd = ob['hd'].decode("utf-8")
+               print("hd : ",hd,type(hd))
+
+               recn = ob['recn'].decode("utf-8")
+               print("recn : ",recn,type(recn))
+
+               key = ob['key'].decode("utf-8")
+               print("cyl : ",cyl,type(cyl))
+
+               data = ob['data'].decode("utf-8")
+               print("cyl : ",data,type(data))
+             except:
+               print("(parse2)some err",sys.exc_info()[1])
 
 
       def parse(self,keyName):
@@ -54,8 +112,10 @@ class DasdServer:
               v = self.redis.hget(keyName,k)
               print("key: %s val:%s type:%s" % (k,v,type(v)) )
 
-      def doRead2(self):
-          self.parse(self.keyName)
+      def doRead2(self,msg):
+          print('doRead2  msg:',msg)
+          #self.parse(self.keyName)
+          self.parse2(self.keyName)
           # ....ckdutil stuff
 
       def doRead(self,keyName):
@@ -97,9 +157,10 @@ class DasdServer:
                    #if(cmd == "rdrec"):
                    if(r):
                        print("calling doRead with self.cmdIndex :",self.cmdIndex)
-                       self.doRead2()
+                       self.doRead2('OK')
                    else:
                        print("(getMsgs) unknown cmd : '%s'" % cmd)
+                       self.doRead2('????')
 
                 time.sleep(0.101)
 
