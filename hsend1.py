@@ -14,7 +14,8 @@ r = redis.Redis("localhost")
 #data = [0,1,3,'key01','the data for cyl=0, hd=1,r=3']
 
 chan ='herc'
-cmd  ='rdrec'
+cmd  ='rdrec:'
+
 print("sending to channel '%s'  cmd: '%s' " % (chan,cmd))
 
 #r.hmset(['cmd:','id:','0001','op:','rd','no:','001','cyl:','0','hd:','1','r:','2'])

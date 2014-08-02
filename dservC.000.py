@@ -6,15 +6,16 @@ import redis
 import sys
 import time
 
-#import ckdutil
-#from ckdutil import *
+import ckdutil
+from ckdutil import *
 
 class DasdServer:
       key = 'herc'      
-      cmds = [1,'qq','SATK-rdRec','SATK-wrtRec']
-
+      cmds = ['SATK-rdRec','SATK-wrtRec']
+      
+      
       def __init__(self,name):
-
+          
           print("(DasdServer v 0.001)(init) name:",name)
           self.name = name
           #self.redis = redis.Redis("localhost")
@@ -27,42 +28,25 @@ class DasdServer:
 
           self.getMsgs();
 
-
+          
       def findCmd(self,cmd):
           print("\n")
-          print("(findCmd)cmds :",DasdServer.cmds)
           print("(findCmd) looking for cmd '%s':" % cmd)
           try:
-              self.cmdIndex = DasdServer.cmds.index(cmd)
-          #if(self.cmdIndex):
-              print("(findCMD OK found at %d" % self.cmdIndex)
-              self.keyName = DasdServer.cmds[self.cmdIndex]
-              return True
+            return DasdServer.cmds.index(cmd)
           except:
-          #else:
-            print("(findCMD)cmd:'%s' Not Found" % cmd)
             return False
-
-
+    
+          
       def parse(self,keyName):
           print("(parse) keyName:",keyName)
-          keys = self.redis.hkeys(keyName)
-          #print("(parse) hkeys :",self.redis.hkeys(keyName))
-          print("(parse) hvals :",keys)
-          print("(parse) hvals :",self.redis.hvals(keyName))
-          for k in keys:
-              v = self.redis.hget(keyName,k)
-              print("key: %s val:%s type:%s" % (k,v,type(v)) )
-
-      def doRead2(self):
-          self.parse(self.keyName)
-          # ....ckdutil stuff
-
+          print(self.redis.hvals(keyName))
+          
       def doRead(self,keyName):
           print("---- doRead ---")
           print("self.redis.hvals keyName '%s'' :",keyName)
           self.parse(keyName)
-
+          
       def pt(self,n,ob):
           print("type(" +n +")")
           print(type(ob))
@@ -95,9 +79,9 @@ class DasdServer:
 
                    r = self.findCmd(cmd)
                    #if(cmd == "rdrec"):
-                   if(r):
-                       print("calling doRead with self.cmdIndex :",self.cmdIndex)
-                       self.doRead2()
+                   if(r): 
+                       print("calling rd")
+                       self.doRead(cmd)
                    else:
                        print("(getMsgs) unknown cmd : '%s'" % cmd)
 

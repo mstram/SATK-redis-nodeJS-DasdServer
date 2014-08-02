@@ -65,17 +65,17 @@ def test2(ck):
 
 ck = {}
 
-fname  = 't2305'
+fname  = 'dasd/t2305'
 device = '2305'
 
 #print("New ..")
 
-#ck = ckd.new(fname,device,None,False,True)
+ck = ckd.new(fname,device,None,False,True)
 
 #ck.detach()
-ck = ckd.attach(fname,False)  # False ReadOnly
+#ck = ckd.attach(fname,False)  # False ReadOnly
 
-#test1(ck)
+test1(ck)
 #test3(ck)
 test2(ck)
 
